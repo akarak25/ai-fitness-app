@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import api from '../utils/axiosConfig';
 
 const AuthContext = createContext();
 
@@ -10,8 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // API URL
-  const API_URL = 'http://localhost:5000/api';
+  // API URL artık axiosConfig.js içinde tanımlanmıştır
 
   // Check if user is logged in
   useEffect(() => {
@@ -23,8 +23,7 @@ export const AuthProvider = ({ children }) => {
           const parsedUser = JSON.parse(userInfo);
           setUser(parsedUser);
           
-          // Set auth header for all requests
-          axios.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.token}`;
+          // Token otomatik olarak axiosConfig.js tarafından eklenecek
         }
       } catch (error) {
         console.error('Auth check error:', error);
@@ -40,13 +39,12 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       setLoading(true);
-      const { data } = await axios.post(`${API_URL}/users`, userData);
+      const { data } = await api.post(`/users`, userData);
       
       // Save to localStorage
       localStorage.setItem('userInfo', JSON.stringify(data));
       
-      // Set auth header for all requests
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      // Token otomatik olarak axiosConfig.js tarafından eklenecek
       
       setUser(data);
       setError(null);
@@ -67,7 +65,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setLoading(true);
-      const { data } = await axios.post(`${API_URL}/users/login`, {
+      const { data } = await api.post(`/users/login`, {
         email,
         password,
       });
@@ -75,13 +73,13 @@ export const AuthProvider = ({ children }) => {
       // Save to localStorage
       localStorage.setItem('userInfo', JSON.stringify(data));
       
-      // Set auth header for all requests
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      // Token otomatik olarak axiosConfig.js tarafından eklenecek
       
       setUser(data);
       setError(null);
       return data;
     } catch (error) {
+      console.error('Login hatası:', error);
       setError(
         error.response && error.response.data.message
           ? error.response.data.message
@@ -96,7 +94,7 @@ export const AuthProvider = ({ children }) => {
   // Logout user
   const logout = () => {
     localStorage.removeItem('userInfo');
-    delete axios.defaults.headers.common['Authorization'];
+    // Headers axiosConfig.js tarafından otomatik olarak temizlenecek
     setUser(null);
   };
 
@@ -104,7 +102,7 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (userData) => {
     try {
       setLoading(true);
-      const { data } = await axios.put(`${API_URL}/users/profile`, userData);
+      const { data } = await api.put(`/users/profile`, userData);
       
       // Update localStorage
       localStorage.setItem('userInfo', JSON.stringify(data));
@@ -113,6 +111,7 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       return data;
     } catch (error) {
+      console.error('Profil güncelleme hatası:', error);
       setError(
         error.response && error.response.data.message
           ? error.response.data.message

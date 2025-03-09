@@ -11,6 +11,7 @@ const fitnessRoutes = require('./routes/fitnessRoutes');
 const progressRoutes = require('./routes/progressRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const communityRoutes = require('./routes/communityRoutes');
+const mockDataRoutes = require('./routes/mockDataRoutes'); // Demo veri için
 
 // Load environment variables
 dotenv.config();
@@ -35,8 +36,16 @@ app.use((req, res, next) => {
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB bağlantısı başarılı'))
-  .catch(err => console.error('MongoDB bağlantı hatası:', err));
+  .then(() => {
+    console.log('MongoDB bağlantısı başarılı');
+    console.log('Bağlantı URI:', process.env.MONGODB_URI);
+  })
+  .catch(err => {
+    console.error('MongoDB bağlantı hatası:');
+    console.error(err);
+    // Önemli bir hata olduğu için uygulama çıkış yapabilir
+    // process.exit(1);
+  });
 
 // Routes
 app.use('/api/users', userRoutes);
@@ -45,6 +54,7 @@ app.use('/api/fitness', fitnessRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/community', communityRoutes);
+app.use('/api/mock-data', mockDataRoutes); // Demo veri rotaları
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
@@ -57,10 +67,12 @@ if (process.env.NODE_ENV === 'production') {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    message: 'Sunucu hatası',
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Bir hata oluştu'
+  console.error('Hata:', err.message);
+  console.error('Stack trace:', err.stack);
+  
+  res.status(err.status || 500).json({
+    message: err.message || 'Sunucu hatası',
+    error: process.env.NODE_ENV === 'development' ? err : {}
   });
 });
 

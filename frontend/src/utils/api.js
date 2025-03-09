@@ -1,37 +1,43 @@
-import axios from 'axios';
+import api from './axiosConfig';
 
-// Base API URL
-const API_URL = 'http://localhost:5000/api';
+// Mock Data API
+export const mockDataApi = {
+  // Demo veri oluştur
+  createMockData: async () => {
+    const response = await api.post(`/mock-data`);
+    return response.data;
+  }
+};
 
 // Nutrition API
 export const nutritionApi = {
   // Beslenme planı oluştur
   generatePlan: async (data) => {
-    const response = await axios.post(`${API_URL}/nutrition/generate`, data);
+    const response = await api.post(`/nutrition/generate`, data);
     return response.data;
   },
   
   // Aktif beslenme planını getir
   getActivePlan: async () => {
-    const response = await axios.get(`${API_URL}/nutrition/active`);
+    const response = await api.get(`/nutrition/active`);
     return response.data;
   },
   
   // Tüm beslenme planlarını getir
   getAllPlans: async () => {
-    const response = await axios.get(`${API_URL}/nutrition`);
+    const response = await api.get(`/nutrition`);
     return response.data;
   },
   
   // Beslenme planını güncelle
   updatePlan: async (id, data) => {
-    const response = await axios.put(`${API_URL}/nutrition/${id}`, data);
+    const response = await api.put(`/nutrition/${id}`, data);
     return response.data;
   },
   
   // Beslenme planını sil
   deletePlan: async (id) => {
-    const response = await axios.delete(`${API_URL}/nutrition/${id}`);
+    const response = await api.delete(`/nutrition/${id}`);
     return response.data;
   }
 };
@@ -40,31 +46,31 @@ export const nutritionApi = {
 export const fitnessApi = {
   // Egzersiz planı oluştur
   generatePlan: async (data) => {
-    const response = await axios.post(`${API_URL}/fitness/generate`, data);
+    const response = await api.post(`/fitness/generate`, data);
     return response.data;
   },
   
   // Aktif egzersiz planını getir
   getActivePlan: async () => {
-    const response = await axios.get(`${API_URL}/fitness/active`);
+    const response = await api.get(`/fitness/active`);
     return response.data;
   },
   
   // Tüm egzersiz planlarını getir
   getAllPlans: async () => {
-    const response = await axios.get(`${API_URL}/fitness`);
+    const response = await api.get(`/fitness`);
     return response.data;
   },
   
   // Egzersiz planını güncelle
   updatePlan: async (id, data) => {
-    const response = await axios.put(`${API_URL}/fitness/${id}`, data);
+    const response = await api.put(`/fitness/${id}`, data);
     return response.data;
   },
   
   // Egzersiz planını sil
   deletePlan: async (id) => {
-    const response = await axios.delete(`${API_URL}/fitness/${id}`);
+    const response = await api.delete(`/fitness/${id}`);
     return response.data;
   }
 };
@@ -73,13 +79,13 @@ export const fitnessApi = {
 export const progressApi = {
   // Ölçüm ekle
   addMeasurement: async (data) => {
-    const response = await axios.post(`${API_URL}/progress/measurements`, data);
+    const response = await api.post(`/progress/measurements`, data);
     return response.data;
   },
   
   // Fotoğraf yükle
   addPhoto: async (formData) => {
-    const response = await axios.post(`${API_URL}/progress/photos`, formData, {
+    const response = await api.post(`/progress/photos`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -89,19 +95,19 @@ export const progressApi = {
   
   // Ruh hali/stres kaydı ekle
   addMoodLog: async (data) => {
-    const response = await axios.post(`${API_URL}/progress/mood`, data);
+    const response = await api.post(`/progress/mood`, data);
     return response.data;
   },
   
   // İlerleme verilerini getir
   getProgress: async () => {
-    const response = await axios.get(`${API_URL}/progress`);
+    const response = await api.get(`/progress`);
     return response.data;
   },
   
   // İlerleme analizi yap
   analyzeProgress: async () => {
-    const response = await axios.get(`${API_URL}/progress/analysis`);
+    const response = await api.get(`/progress/analysis`);
     return response.data;
   }
 };
@@ -110,13 +116,13 @@ export const progressApi = {
 export const aiApi = {
   // AI asistanı ile sohbet
   chatWithAssistant: async (message) => {
-    const response = await axios.post(`${API_URL}/ai/assistant`, { message });
+    const response = await api.post(`/ai/assistant`, { message });
     return response.data;
   },
   
   // Yemek fotoğrafı analizi
   analyzeFoodImage: async (formData) => {
-    const response = await axios.post(`${API_URL}/ai/analyze-food`, formData, {
+    const response = await api.post(`/ai/analyze-food`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -126,7 +132,7 @@ export const aiApi = {
   
   // Duygu ve stres analizi
   analyzeMood: async (text) => {
-    const response = await axios.post(`${API_URL}/ai/analyze-mood`, { text });
+    const response = await api.post(`/ai/analyze-mood`, { text });
     return response.data;
   }
 };
@@ -135,9 +141,9 @@ export const aiApi = {
 export const communityApi = {
   // Grup oluştur
   createGroup: async (data) => {
-    console.log('createGroup API çağrılıyor, endpoint:', `${API_URL}/community/groups`);
+    console.log('createGroup API çağrılıyor, endpoint:', `/community/groups`);
     try {
-      const response = await axios.post(`${API_URL}/community/groups`, data);
+      const response = await api.post(`/community/groups`, data);
       return response.data;
     } catch (error) {
       console.error('createGroup API hatası:', error);
@@ -147,31 +153,31 @@ export const communityApi = {
   
   // Tüm grupları getir
   getGroups: async (params = {}) => {
-    const response = await axios.get(`${API_URL}/community/groups`, { params });
+    const response = await api.get(`/community/groups`, { params });
     return response.data;
   },
   
   // Grup detayını getir
   getGroupById: async (id) => {
-    const response = await axios.get(`${API_URL}/community/groups/${id}`);
+    const response = await api.get(`/community/groups/${id}`);
     return response.data;
   },
   
   // Gruba katıl
   joinGroup: async (id) => {
-    const response = await axios.post(`${API_URL}/community/groups/${id}/join`);
+    const response = await api.post(`/community/groups/${id}/join`);
     return response.data;
   },
   
   // Gruptan ayrıl
   leaveGroup: async (id) => {
-    const response = await axios.post(`${API_URL}/community/groups/${id}/leave`);
+    const response = await api.post(`/community/groups/${id}/leave`);
     return response.data;
   },
   
   // Üyelik isteklerini yönet
   manageRequests: async (id, userId, action) => {
-    const response = await axios.post(`${API_URL}/community/groups/${id}/manage-requests`, {
+    const response = await api.post(`/community/groups/${id}/manage-requests`, {
       userId,
       action
     });
@@ -180,31 +186,31 @@ export const communityApi = {
   
   // Gönderi oluştur
   createPost: async (groupId, data) => {
-    const response = await axios.post(`${API_URL}/community/groups/${groupId}/posts`, data);
+    const response = await api.post(`/community/groups/${groupId}/posts`, data);
     return response.data;
   },
   
   // Gönderi sil
   deletePost: async (id) => {
-    const response = await axios.delete(`${API_URL}/community/posts/${id}`);
+    const response = await api.delete(`/community/posts/${id}`);
     return response.data;
   },
   
   // Gönderi beğen/beğenme
   likePost: async (id) => {
-    const response = await axios.post(`${API_URL}/community/posts/${id}/like`);
+    const response = await api.post(`/community/posts/${id}/like`);
     return response.data;
   },
   
   // Yorum ekle
   addComment: async (postId, content) => {
-    const response = await axios.post(`${API_URL}/community/posts/${postId}/comments`, { content });
+    const response = await api.post(`/community/posts/${postId}/comments`, { content });
     return response.data;
   },
   
   // Yorum sil
   deleteComment: async (id) => {
-    const response = await axios.delete(`${API_URL}/community/comments/${id}`);
+    const response = await api.delete(`/community/comments/${id}`);
     return response.data;
   }
 };

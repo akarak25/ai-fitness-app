@@ -157,13 +157,13 @@ const addMoodLog = async (req, res) => {
 // @access  Private
 const getProgress = async (req, res) => {
   try {
-    const progress = await Progress.findOne({ user: req.user._id });
+    let progress = await Progress.findOne({ user: req.user._id });
 
-    if (!progress) {
-      return res.status(404).json({ message: 'İlerleme kaydı bulunamadı' });
+    if (progress) {
+      res.json(progress);
+    } else {
+      res.status(404).json({ message: 'İlerleme kaydı bulunamadı' });
     }
-
-    res.json(progress);
   } catch (error) {
     res.status(500).json({ message: 'İlerleme verileri getirilirken bir hata oluştu', error: error.message });
   }

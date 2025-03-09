@@ -23,19 +23,19 @@ const protect = async (req, res, next) => {
       // Kullanıcıyı bul ve şifre hariç bilgileri req.user'a at
       req.user = await User.findById(decoded.id).select('-password');
       console.log('Kullanıcı bulundu:', req.user ? req.user._id : 'Bulunamadı');
+      
+      if (!req.user) {
+        return res.status(401).json({ message: 'Kullanıcı bulunamadı' });
+      }
 
       next();
     } catch (error) {
       console.error('Auth hatası:', error);
-      res.status(401).json({ message: 'Yetkilendirme başarısız, geçersiz token', error: error.message });
+      return res.status(401).json({ message: 'Yetkilendirme başarısız, geçersiz token', error: error.message });
     }
   } else {
     console.error('Authorization header bulunamadı veya yanlış formatta');
-  }
-
-  if (!token) {
-    res.status(401);
-    throw new Error('Yetkilendirme başarısız, token bulunamadı');
+    return res.status(401).json({ message: 'Yetkilendirme başarısız, token bulunamadı' });
   }
 };
 
